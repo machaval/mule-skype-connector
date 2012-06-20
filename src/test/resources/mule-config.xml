@@ -30,7 +30,7 @@
 
 
     <flow name="testFlow">
-        <skype:send-message-to userId="santiago.vacas" content="Excelente"/>
+        <skype:send-message-to userId="santiago.vacas" message="Hackaton test message"/>
     </flow>
 
 </mule>

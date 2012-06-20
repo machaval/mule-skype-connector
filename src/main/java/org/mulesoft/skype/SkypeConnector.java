@@ -22,10 +22,10 @@ package org.mulesoft.skype;
 
 import com.skype.*;
 import org.mule.api.annotations.*;
-import org.mule.api.annotations.param.ConnectionKey;
-import org.mule.api.ConnectionException;
 import org.mule.api.callback.SourceCallback;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,7 +54,8 @@ public class SkypeConnector {
             public void chatMessageReceived(ChatMessage receivedChatMessage) throws SkypeException {
                 try {
                     if (receivedChatMessage.getType().equals(ChatMessage.Type.SAID)) {
-                        callback.process(new SkypeChatMessage(receivedChatMessage.getSenderId(),receivedChatMessage.getContent()));
+
+                        callback.process(new SkypeChatMessage(receivedChatMessage.getSenderId(), receivedChatMessage.getContent()));
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Error on message received", e);
@@ -80,8 +81,9 @@ public class SkypeConnector {
         Skype.addChatMessageListener(new ChatMessageListener() {
             public void chatMessageReceived(ChatMessage receivedChatMessage) throws SkypeException {
                 try {
-                    if (receivedChatMessage.getType().equals(ChatMessage.Type.SAID) && receivedChatMessage.getSenderId().equalsIgnoreCase(userID)) {
-                        callback.process(new SkypeChatMessage(receivedChatMessage.getSenderId(),receivedChatMessage.getContent()));
+                    String senderId = receivedChatMessage.getSenderId();
+                    if (receivedChatMessage.getType().equals(ChatMessage.Type.SAID) && senderId.equalsIgnoreCase(userID)) {
+                        callback.process(new SkypeChatMessage(senderId, receivedChatMessage.getContent()));
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Error on message received", e);
@@ -101,14 +103,54 @@ public class SkypeConnector {
      * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:sendMessageTo}
      *
      * @param userId  Target Skype user id
-     * @param content Content to be processed
+     * @param message Content to be processed
      * @return Some string
      */
     @Processor
-    public String sendMessageTo(String userId, String content) throws SkypeException {
+    public String sendMessageTo(String userId, String message) throws SkypeException {
         Skype.setDaemon(false);
         Chat chat = Skype.chat(userId);
-        return chat.send(content).getId();
+        return chat.send(message).getId();
+
+    }
+
+    /**
+     * Custom processor
+     * <p/>
+     * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:sendMessage}
+     *
+     * @param message The message to be sent
+     * @return Some string
+     */
+    @Processor
+    public String sendMessage(SkypeChatMessage message) throws SkypeException {
+        Skype.setDaemon(false);
+        Chat chat = Skype.chat(message.getUserId());
+        return chat.send(message.getMessage()).getId();
+
+    }
+
+    /**
+     * Returns the list of contacts
+     * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:getContacts}
+     *
+     * @return The list of contacts
+     * @throws SkypeException
+     */
+    @Processor
+    public List<SkypeContact> getContacts() throws SkypeException {
+        List<SkypeContact> result = new ArrayList<SkypeContact>();
+        ContactList contactList = Skype.getContactList();
+        Friend[] allFriends = contactList.getAllFriends();
+        for (Friend allFriend : allFriends) {
+            String id = allFriend.getId();
+            User.Status status = allFriend.getStatus();
+            result.add(new SkypeContact(id, SkypeContact.Status.valueOf(status.name())));
+        }
+        return result;
+    }
+
+    static {
 
     }
 }

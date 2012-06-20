@@ -7,3 +7,9 @@
 <!-- BEGIN_INCLUDE(skype:listenForChatMessagesOn) -->
     <skype:listenForChatMessagesOn userId="#[map-payload:userId]" />
 <!-- END_INCLUDE(skype:listenForChatMessagesOn) -->
+<!-- BEGIN_INCLUDE(skype:sendMessage) -->
+    <skype:sendMessage message="#[payload]"/>
+<!-- END_INCLUDE(skype:sendMessage) -->
+<!-- BEGIN_INCLUDE(skype:getContacts) -->
+    <skype:getContacts/>
+<!-- END_INCLUDE(skype:getContacts) -->
