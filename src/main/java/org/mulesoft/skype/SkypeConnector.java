@@ -22,6 +22,8 @@ package org.mulesoft.skype;
 
 import com.skype.*;
 import org.mule.api.annotations.*;
+import org.mule.api.annotations.param.Default;
+import org.mule.api.annotations.param.Optional;
 import org.mule.api.callback.SourceCallback;
 
 import java.util.ArrayList;
@@ -102,15 +104,21 @@ public class SkypeConnector {
      * <p/>
      * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:sendMessageTo}
      *
-     * @param userId  Target Skype user id
+     *
+     *
+     *
+     *
      * @param message Content to be processed
-     * @return Some string
+     * @param userId  Target Skype user id
+     * @return The Status
      */
     @Processor
-    public String sendMessageTo(String userId, String message) throws SkypeException {
+    public String sendMessageTo(String message, String userId) throws SkypeException {
         Skype.setDaemon(false);
         Chat chat = Skype.chat(userId);
-        return chat.send(message).getId();
+        ChatMessage send = chat.send(message);
+
+        return send.getId();
 
     }
 
@@ -119,14 +127,19 @@ public class SkypeConnector {
      * <p/>
      * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:sendMessage}
      *
+     *
+     *
+     *
      * @param message The message to be sent
-     * @return Some string
+     * @return The id
      */
     @Processor
-    public String sendMessage(SkypeChatMessage message) throws SkypeException {
+    public String sendMessage(@Optional @Default("#[payload]") SkypeChatMessage message) throws SkypeException {
         Skype.setDaemon(false);
         Chat chat = Skype.chat(message.getUserId());
-        return chat.send(message.getMessage()).getId();
+        ChatMessage send = chat.send(message.getMessage());
+
+        return send.getId();
 
     }
 
@@ -150,7 +163,34 @@ public class SkypeConnector {
         return result;
     }
 
-    static {
+    /**
+     * Sends an sms message to an specific user
+     * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:sendSMSTo}
+     *
+     *
+     * @param message The message to be sent
+     * @param phoneNumber The phone number
+     * @return  The id
+     * @throws SkypeException
+     */
+    @Processor
+    public String sendSMSTo(String message, String phoneNumber) throws SkypeException {
+        SMS sms = Skype.sendSMS(phoneNumber, message);
+        return sms.getId();
+    }
 
+    /**
+     * Sends an sms message to an specific user
+     * {@sample.xml ../../../doc/Skype-connector.xml.sample skype:sendSMS}
+     *
+     *
+     * @param message The message to be sent
+     * @return  The id
+     * @throws SkypeException
+     */
+    @Processor
+    public String sendSMS(@Optional @Default("#[payload]") SkypeSMSMessage message) throws SkypeException {
+        SMS sms = Skype.sendSMS(message.getPhoneNumber(), message.getMessage());
+        return sms.getId();
     }
 }

@@ -1,5 +1,5 @@
 <!-- BEGIN_INCLUDE(skype:sendMessageTo) -->
-    <skype:sendMessageTo userId="#[map-payload:userId]" content="#[map-payload:content]" />
+    <skype:sendMessageTo userId="#[map-payload:userId]" message="#[map-payload:content]" />
 <!-- END_INCLUDE(skype:sendMessageTo) -->
 <!-- BEGIN_INCLUDE(skype:listenForChatMessages) -->
     <skype:listenForChatMessages  />
@@ -13,3 +13,9 @@
 <!-- BEGIN_INCLUDE(skype:getContacts) -->
     <skype:getContacts/>
 <!-- END_INCLUDE(skype:getContacts) -->
+<!-- BEGIN_INCLUDE(skype:sendSMSTo) -->
+    <skype:sendSMSTo phoneNumber=#[map-payload:phone] message=#[map-payload:message] />
+<!-- END_INCLUDE(skype:sendSMSTo) -->
+<!-- BEGIN_INCLUDE(skype:sendSMS) -->
+    <skype:sendSMS message=#[payload] />
+<!-- END_INCLUDE(skype:sendSMS) -->

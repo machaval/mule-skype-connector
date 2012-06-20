@@ -12,6 +12,20 @@ public class SkypeChatMessage
     private String userId;
     private String message;
 
+    /**
+     * Enumeration for STATUS of CHATMESSAGE.
+     */
+    public enum Status {
+        /**
+         * SENDING - message is being sent.
+         * SENT - message was sent.
+         * RECEIVED - message has been received.
+         * READ - message has been read.
+         */
+        SENDING, SENT, RECEIVED, READ;
+    }
+
+
     public SkypeChatMessage(String userId, String message) {
         this.userId = userId;
         this.message = message;
