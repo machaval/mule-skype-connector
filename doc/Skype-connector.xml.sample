@@ -1,0 +1,9 @@
+<!-- BEGIN_INCLUDE(skype:sendMessageTo) -->
+    <skype:sendMessageTo userId="#[map-payload:userId]" content="#[map-payload:content]" />
+<!-- END_INCLUDE(skype:sendMessageTo) -->
+<!-- BEGIN_INCLUDE(skype:listenForChatMessages) -->
+    <skype:listenForChatMessages  />
+<!-- END_INCLUDE(skype:listenForChatMessages) -->
+<!-- BEGIN_INCLUDE(skype:listenForChatMessagesOn) -->
+    <skype:listenForChatMessagesOn userId="#[map-payload:userId]" />
+<!-- END_INCLUDE(skype:listenForChatMessagesOn) -->
